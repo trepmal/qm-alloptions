@@ -8,9 +8,9 @@ class QM_Output_AllOptions extends QM_Output_Html {
 
 	public function __construct( QM_Collector $collector ) {
 		parent::__construct( $collector );
-		add_filter( 'qm/output/menus', array( $this, 'admin_menu' ), 101 );
-		// add_filter( 'qm/output/title', array( $this, 'admin_title' ), 101 );
+		add_filter( 'qm/output/title', array( $this, 'admin_title' ), 101 );
 		add_filter( 'qm/output/menu_class', array( $this, 'admin_class' ) );
+		add_filter( 'qm/output/menus', array( $this, 'admin_menu' ), 101 );
 	}
 
 	/**
@@ -46,11 +46,13 @@ class QM_Output_AllOptions extends QM_Output_Html {
 				?>
 				</tbody>
 			</table>
-		<ul>
-		<li>use <code>wp option get &lt;option_name&gt;</code> to view a big option</li>
-		<li>use <code>wp option delete &lt;option_name&gt;</code> to delete a big option</li>
-		<li>use <code>wp option autoload set &lt;option_name&gt; no</code> to disable autoload for option</li>
-		</ul>
+			<?php if ( file_exists( WPMU_PLUGIN_DIR . '/wp-cli/alloptions.php' ) ) { ?>
+			<div class="qm-boxed">
+				<ul>
+					<li>use <code>wp option autoload set &lt;option_name&gt; no</code> to disable autoload for given option</li>
+				</ul>
+			</div>
+			<?php } ?>
 		</div>
 		<?php
 	}
@@ -63,12 +65,19 @@ class QM_Output_AllOptions extends QM_Output_Html {
 	 * @return array
 	 */
 	public function admin_title( array $title ) {
-		// $data = $this->collector->get_data();
+		$data = $this->collector->get_data();
 
-		$title[] = sprintf(
-			_x( '%s<small>F</small>', 'number of included files', 'query-monitor' ),
-			'x'
-		);
+		// Only show title info if size is risky
+		if ( $data['total_size_comp'] > MB_IN_BYTES * .8 ) {
+
+			list( $num, $unit ) = explode( ' ', size_format( $data['total_size_comp'], 1 ) );
+
+			$title[] = sprintf(
+				_x( '%s<small> %s opts</small>', 'size of alloptions', 'query-monitor' ),
+				$num,
+				$unit
+			);
+		}
 
 		return $title;
 	}
