@@ -20,7 +20,7 @@ class QM_Output_AllOptions extends QM_Output_Html {
 		$data = $this->collector->get_data();
 		?>
 		<div class="qm qm-non-tabular" id="<?php echo esc_attr($this->collector->id())?>">
-			<div class="qm-boxed">
+			<div class="qm-boxed"><h3>
 			<?php
 			printf(
 				'Total size: <strong>%s</strong> (uncompressed), %s (estimated compression)',
@@ -28,19 +28,25 @@ class QM_Output_AllOptions extends QM_Output_Html {
 				size_format( $data['total_size_comp'], 2 )
 			);
 			?>
-			</div>
-			<table class="qm-sortable">
+			</h3></div>
+			<table>
 				<thead>
 					<tr>
 					<th scope="col"><?php esc_html_e( 'Option name', 'qm-monitor' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Size (bytes)', 'qm-monitor' ); ?></th>
+					<th scope="col" class="qm-num"><?php esc_html_e( 'Size (bytes)', 'qm-monitor' ); ?></th>
+					<th scope="col" class="qm-num"><?php esc_html_e( 'Size (human)', 'qm-monitor' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
 					foreach ( $data['options'] as $option ) {
 						echo '<tr>';
-						printf( '<td class="qm-ltr">%s</td><td class="qm-ltr">%d</td>', $option->name, $option->size );
+						printf(
+							'<td class="qm-ltr">%s</td><td class="qm-ltr qm-num">%d</td><td class="qm-ltr qm-num">%s</td>',
+							$option->name,
+							$option->size,
+							size_format( $option->size, 2 )
+						);
 						echo '</tr>';
 					}
 				?>
