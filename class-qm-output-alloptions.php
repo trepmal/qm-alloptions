@@ -94,12 +94,10 @@ class QM_Output_AllOptions extends QM_Output_Html {
 
 	public function admin_menu( array $menu ) {
 
-		// $data = $this->collector->get_data();
-
 		$menu[] = $this->menu( array(
 			'id'    => 'qm-alloptions',
 			'href'  => '#qm-alloptions',
-			'title' => __( 'AllOptions', 'query-monitor' ),
+			'title' => __( 'Autoloaded Options', 'query-monitor' ),
 		));
 
 		return $menu;
